@@ -15,8 +15,8 @@ public class Main extends JFrame {
     private JTextArea area;
     private JTextField txtIP, txtPuerto;
 
-    private JComboBox<String> comboInterfaces;         // Lista de interfaces
-    private InetAddress[] listaIPs;                    // IPs reales asociadas
+    private JComboBox<String> comboInterfaces;  // Lista de interfaces
+    private InetAddress[] listaIPs;        // IPs reales asociadas
 
     private ServerSocket server;
     private boolean servidorActivo = false;
@@ -28,9 +28,6 @@ public class Main extends JFrame {
         setLayout(new BorderLayout());
         setLocationRelativeTo(null);
 
-        //------------------------------------
-        // Panel Superior de configuración
-        //------------------------------------
         JPanel top = new JPanel(new GridLayout(2, 3, 5, 5));
         top.setBorder(BorderFactory.createTitledBorder("Configuración IP"));
 
@@ -50,9 +47,6 @@ public class Main extends JFrame {
 
         add(top, BorderLayout.NORTH);
 
-        //------------------------------------
-        // Selector de interfaz local
-        //------------------------------------
         comboInterfaces = new JComboBox<>();
         listaIPs = cargarInterfaces();
 
@@ -62,9 +56,6 @@ public class Main extends JFrame {
 
         add(panelInterfaces, BorderLayout.SOUTH);
 
-        //------------------------------------
-        // Consola de logs
-        //------------------------------------
         area = new JTextArea();
         area.setEditable(false);
         area.setBackground(Color.BLACK);
@@ -73,16 +64,10 @@ public class Main extends JFrame {
 
         add(new JScrollPane(area), BorderLayout.CENTER);
 
-        //------------------------------------
-        // Acciones
-        //------------------------------------
         btnEnviar.addActionListener(e -> enviarMensaje());
         btnServidor.addActionListener(e -> iniciarServidor());
     }
 
-    // =====================================================================
-    //  Cargar interfaces de red disponibles
-    // =====================================================================
     private InetAddress[] cargarInterfaces() {
 
         List<InetAddress> ips = new ArrayList<>();
@@ -114,9 +99,6 @@ public class Main extends JFrame {
         return ips.toArray(new InetAddress[0]);
     }
 
-    // =====================================================================
-    //  Iniciar Servidor TCP en la interfaz seleccionada
-    // =====================================================================
     private void iniciarServidor() {
 
         if (servidorActivo) {
@@ -161,9 +143,6 @@ public class Main extends JFrame {
         }).start();
     }
 
-    // =====================================================================
-    //  Enviar mensaje TCP usando la interfaz seleccionada
-    // =====================================================================
     private void enviarMensaje() {
 
         int idx = comboInterfaces.getSelectedIndex();
@@ -191,7 +170,6 @@ public class Main extends JFrame {
 
                 Socket socket = new Socket();
 
-                // Forzamos a usar la IP de la interfaz seleccionada
                 socket.bind(new InetSocketAddress(ipLocal, 0));
 
                 socket.connect(new InetSocketAddress(ipDestino, puerto), 3000);
@@ -221,19 +199,13 @@ public class Main extends JFrame {
         }).start();
     }
 
-    // =====================================================================
-    //  Log en pantalla
-    // =====================================================================
     private void log(String txt) {
         SwingUtilities.invokeLater(() -> {
             area.append(txt + "\n");
             area.setCaretPosition(area.getDocument().getLength());
         });
     }
-
-    // =====================================================================
-    //  MAIN
-    // =====================================================================
+    // main
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new Main().setVisible(true));
     }
